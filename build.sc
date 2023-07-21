@@ -1,7 +1,10 @@
 import mill._, scalalib._, publish._, scalajslib._, scalanativelib._, scalanativelib.api._
-val sjsonnetVersion = "0.4.4-SNAPSHOT"
+import $ivy.`com.lihaoyi::mill-contrib-artifactory:`
+import mill.contrib.artifactory.ArtifactoryPublishModule
 
-object sjsonnet extends Cross[SjsonnetModule]("2.12.13", "2.13.10")
+val sjsonnetVersion = "0.4.5-ANDUIN"
+
+object sjsonnet extends Cross[SjsonnetModule]("2.13.11", "3.3.0")
 class SjsonnetModule(val crossScalaVersion: String) extends Module {
 
   override def millSourcePath = super.millSourcePath / os.up
@@ -11,7 +14,11 @@ class SjsonnetModule(val crossScalaVersion: String) extends Module {
       ivy"com.lihaoyi::mainargs::0.4.0"
     )
   }
-  trait SjsonnetCrossModule extends CrossScalaModule with PublishModule{
+  trait SjsonnetCrossModule extends CrossScalaModule with ArtifactoryPublishModule {
+
+    def artifactoryUri: String = "https://example.com/artifactory/my-repo"
+
+    def artifactorySnapshotUri: String = "https://example.com/artifactory/my-snapshot-repo"
 
     override def artifactName = "sjsonnet"
     def crossScalaVersion = SjsonnetModule.this.crossScalaVersion
